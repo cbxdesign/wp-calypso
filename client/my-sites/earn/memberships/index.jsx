@@ -18,6 +18,7 @@ import InfiniteScroll from 'components/infinite-scroll';
 import QueryMembershipsEarnings from 'components/data/query-memberships-earnings';
 import QueryMembershipsSettings from 'components/data/query-memberships-settings';
 import { requestSubscribers } from 'state/memberships/subscribers/actions';
+import { requestSubscriptionStopByClient } from 'state/memberships/subscriptions/actions';
 import { decodeEntities } from 'lib/formatting';
 import Gravatar from 'components/gravatar';
 import isSiteOnPaidPlan from 'state/selectors/is-site-on-paid-plan';
@@ -284,6 +285,17 @@ class MembershipsSection extends Component {
 					<Gridicon size={ 18 } icon={ 'external' } />
 					{ this.props.translate( 'See transactions in Stripe Dashboard' ) }
 				</PopoverMenuItem>
+				<PopoverMenuItem
+					onClick={ () =>
+						this.props.requestSubscriptionStopByClient(
+							subscriber.id,
+							this.props.translate( 'Subscription cancelled' )
+						)
+					}
+				>
+					<Gridicon size={ 18 } icon={ 'cross' } />
+					{ this.props.translate( 'Cancel Subscription' ) }
+				</PopoverMenuItem>
 			</EllipsisMenu>
 		);
 	}
@@ -476,6 +488,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect( mapStateToProps, { requestSubscribers } )(
+export default connect( mapStateToProps, { requestSubscriptionStopByClient, requestSubscribers } )(
 	localize( withLocalizedMoment( MembershipsSection ) )
 );
