@@ -49,6 +49,7 @@ import detectHistoryNavigation from 'lib/detect-history-navigation';
 import userFactory from 'lib/user';
 import { getUrlParts } from 'lib/url/url-parts';
 import { setStore } from 'state/redux-store';
+import canCurrentUserUseCustomerHome from 'state/sites/selectors/can-current-user-use-customer-home';
 
 const debug = debugFactory( 'calypso' );
 
@@ -126,21 +127,28 @@ const loggedOutMiddleware = currentUser => {
 	}
 };
 
-const loggedInMiddleware = currentUser => {
+const loggedInMiddleware = ( currentUser, reduxStore ) => {
 	const jetpackCloudEnvs = [
 		'jetpack-cloud-development',
 		'jetpack-cloud-stage',
 		'jetpack-cloud-production',
 	];
 	const calypsoEnv = config( 'env_id' );
+	const currentUserData = currentUser.get();
 
 	// TODO: Remove Jetpack Cloud specific logic when root route is no longer handled by the reader section
-	if ( ! currentUser.get() || jetpackCloudEnvs.includes( calypsoEnv ) ) {
+	if ( ! currentUserData || jetpackCloudEnvs.includes( calypsoEnv ) ) {
 		return;
 	}
 
 	page( '/', context => {
-		let redirectPath = '/read';
+		const { primarySiteSlug, primary_blog } = currentUserData;
+		const isCustomerHomeEnabled = canCurrentUserUseCustomerHome(
+			reduxStore.getState(),
+			primary_blog
+		);
+		let redirectPath =
+			primarySiteSlug && isCustomerHomeEnabled ? `/home/${ primarySiteSlug }` : '/read';
 
 		if ( context.querystring ) {
 			redirectPath += `?${ context.querystring }`;
@@ -250,7 +258,7 @@ const setupMiddlewares = ( currentUser, reduxStore ) => {
 	setupContextMiddleware( reduxStore );
 	oauthTokenMiddleware();
 	loggedOutMiddleware( currentUser );
-	loggedInMiddleware( currentUser );
+	loggedInMiddleware( currentUser, reduxStore );
 	loadSectionsMiddleware();
 	setRouteMiddleware();
 	clearNoticesMiddleware();
