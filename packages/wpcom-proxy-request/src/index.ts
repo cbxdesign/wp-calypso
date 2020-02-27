@@ -92,6 +92,17 @@ const supportsProgress = !! window.ProgressEvent && !! window.FormData;
 
 debug( 'using "origin": %o', origin );
 
+export interface WpcomRequestParams {
+	path?: string;
+	method?: string;
+	apiVersion?: string;
+	body?: object;
+	token?: string;
+	metaAPI?: {
+		accessAllUsersBlogs?: boolean;
+	};
+}
+
 /**
  * Performs a "proxied REST API request". This happens by calling
  * `iframe.postMessage()` on the proxy iframe instance, which from there
@@ -102,7 +113,7 @@ debug( 'using "origin": %o', origin );
  * @param {Function} [fn] - callback response
  * @returns {window.XMLHttpRequest} XMLHttpRequest instance
  */
-const request = ( originalParams, fn ) => {
+const request: ( WpcomRequestParams, Function ) => XMLHttpRequest = ( originalParams, fn ) => {
 	const params = Object.assign( {}, originalParams );
 
 	debug( 'request(%o)', params );
@@ -277,7 +288,7 @@ function install() {
 /**
  * Reloads the proxy iframe.
  */
-const reloadProxy = () => {
+const reloadProxy: () => void = () => {
 	install();
 };
 
