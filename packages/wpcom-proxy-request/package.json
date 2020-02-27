@@ -35,8 +35,9 @@
 	],
 	"scripts": {
 		"clean": "npx rimraf dist",
+		"prepare": "tsc --project ./tsconfig.json && tsc --project ./tsconfig-cjs.json",
 		"prepublish": "npm run clean",
-		"prepare": "transpile"
+		"watch": "tsc --project ./tsconfig.json --watch"
 	},
 	"dependencies": {
 		"component-event": "^0.1.4",

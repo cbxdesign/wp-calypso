@@ -1,5 +1,6 @@
 # 6.0.0 / TBD
 
+- Migrate to TypeScript.
 - Move the published `build/` folder to `dist/` to align with other Calypso packages
 - Upgrade dependency 'debug' to 4.1.1
 
