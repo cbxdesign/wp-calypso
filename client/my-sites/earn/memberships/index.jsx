@@ -17,8 +17,7 @@ import { Card, Button, CompactCard } from '@automattic/components';
 import InfiniteScroll from 'components/infinite-scroll';
 import QueryMembershipsEarnings from 'components/data/query-memberships-earnings';
 import QueryMembershipsSettings from 'components/data/query-memberships-settings';
-import { requestSubscribers } from 'state/memberships/subscribers/actions';
-import { requestSubscriptionStopByClient } from 'state/memberships/subscriptions/actions';
+import { requestSubscribers, requestSubscriptionStop } from 'state/memberships/subscribers/actions';
 import { decodeEntities } from 'lib/formatting';
 import Gravatar from 'components/gravatar';
 import isSiteOnPaidPlan from 'state/selectors/is-site-on-paid-plan';
@@ -287,8 +286,9 @@ class MembershipsSection extends Component {
 				</PopoverMenuItem>
 				<PopoverMenuItem
 					onClick={ () =>
-						this.props.requestSubscriptionStopByClient(
-							subscriber.id,
+						this.props.requestSubscriptionStop(
+							this.props.siteId,
+							subscriber,
 							this.props.translate( 'Subscription cancelled' )
 						)
 					}
@@ -488,6 +488,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect( mapStateToProps, { requestSubscriptionStopByClient, requestSubscribers } )(
+export default connect( mapStateToProps, { requestSubscribers, requestSubscriptionStop } )(
 	localize( withLocalizedMoment( MembershipsSection ) )
 );

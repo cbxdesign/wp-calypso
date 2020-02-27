@@ -7,7 +7,6 @@ import {
 	MEMBERSHIPS_SUBSCRIPTION_STOP,
 	MEMBERSHIPS_SUBSCRIPTION_STOP_SUCCESS,
 	MEMBERSHIPS_SUBSCRIPTION_STOP_FAILURE,
-	NOTICE_CREATE,
 } from 'state/action-types';
 import wpcom from 'lib/wp';
 
@@ -38,28 +37,5 @@ export const requestSubscriptionStop = subscriptionId => {
 					error,
 				} );
 			} );
-	};
-};
-
-export const requestSubscriptionStopByClient = ( subscriptionId, noticeText ) => {
-	return dispatch => {
-		dispatch( {
-			type: MEMBERSHIPS_SUBSCRIPTION_STOP,
-			subscriptionId,
-		} );
-
-		dispatch( {
-			type: MEMBERSHIPS_SUBSCRIPTION_STOP_SUCCESS,
-			subscriptionId,
-		} );
-
-		dispatch( {
-			type: NOTICE_CREATE,
-			notice: {
-				duration: 5000,
-				text: noticeText,
-				status: 'is-success',
-			},
-		} );
 	};
 };
